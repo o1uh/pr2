@@ -1,4 +1,4 @@
-﻿#include "school.h"
+﻿#include "mods.h"
 
 int main() {
 	SetConsoleCP(1251);
