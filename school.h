@@ -14,35 +14,113 @@
 
 
 class Attestat {
+private:
+    int math;
+    int history;
+    int russian;
+    float avg;
+
 public:
-    int math = 0;
-    int history = 0;
-    int russian = 0;
-    float avg = 0;
-    
+    Attestat() {
+        math = 0;
+        history = 0;
+        russian = 0;
+        avg = 0;
+    }
+    void setMath(int nMath) {
+        math = nMath;
+    }
+    void setHistory(int nHistory) {
+        history = nHistory;
+    }
+    void setRussian(int nRussian) {
+        russian = nRussian;
+    }
+    void setAvg() {
+        avg = (float(math) + float(history) + float(russian)) / 3.;
+    }
+    int getMath() {
+        return math;
+    }
+    int getHistory() {
+        return history;
+    }
+    int getRussian() {
+        return russian;
+    }
+    float getAvg() {
+        return avg;
+    }
 };
+
 class Student {
-public:
+private:
     char fio[25];
+    
+public:
     Attestat att;
-   
+    Student() {}
+    void setFio(char nFio[25]){
+        strcpy(fio, nFio);
+    }
+    char* getFio() {
+        return fio;
+    }
+    
 };
 
 class Clas {
-public:
+private:
     int num;
     char b[2];
     int count;
-    Student stt[30];
     float avg;
     
+public:    Student stt[30];
+    Clas() {}
+    void setNum(int nNum) {
+        num = nNum;
+    }
+    void setB(char nB[2]) {
+        strcpy(b, nB);
+    }
+    void setCount(int nCount) {
+        count = nCount;
+    }
+    void setAvg(float nAvg) {
+        avg = nAvg;
+    }
+    int getNum() {
+        return num;
+    }
+    char* getB() {
+        return b;
+    }
+    int getCount() {
+        return count;
+    }
+    float getAvg() {
+        return avg;
+    }
+
 };
 class School {
-public:
-    int n_cl = 0;
-    Clas cls[5];
+private:
+    int n_cl;
     
+public:
+    Clas cls[5];
+    School() {
+        n_cl = 0;
+    }
+    void setN_cl(int nN_cl) {
+        n_cl = nN_cl;
+    }
+    int getN_cl() {
+        return n_cl;
+    }
 };
+
 
 void cl() { // ф-я очистки, только после нажатия
     printf("\n\nНажмите любую клавишу, чтобы продолжить...");
@@ -91,28 +169,28 @@ void menu() {
 
 void red_avg(School* scl, int n, int i) {
     float s = 0;
-    (*scl).cls[n].stt[i].att.avg = ((*scl).cls[n].stt[i].att.math + (*scl).cls[n].stt[i].att.history + (*scl).cls[n].stt[i].att.russian) / 3.;
-    for (int j = 0; j < (*scl).cls[n].count; j++) {
-        s += (*scl).cls[n].stt[j].att.avg;
+    (*scl).cls[n].stt[i].att.setAvg();
+    for (int j = 0; j < (*scl).cls[n].getCount(); j++) {
+        s += float((*scl).cls[n].stt[j].att.getAvg());
     }
-    (*scl).cls[n].avg = s / float((*scl).cls[n].count);
+    (*scl).cls[n].setAvg(s / float((*scl).cls[n].getCount()));
 }
 
 void vivod_scl(School* scl, int n_class) {
     cl_ogl();
     for (int i = 0; i < n_class; i++) {
-        printf("%4d%s %24d %24.2f\n", (*scl).cls[i].num, (*scl).cls[i].b, (*scl).cls[i].count, (*scl).cls[i].avg);
+        printf("%4d%s %24d %24.2f\n", (*scl).cls[i].getNum(), (*scl).cls[i].getB(), (*scl).cls[i].getCount(), (*scl).cls[i].getAvg());
     }
 }
 void vivod_cls(School* scl, int i) {
     st_ogl();
 
-    for (int j = 0; j < (*scl).cls[i].count; j++)
-        printf("%d)%24s %24d %24d %24d %22.2f\n", j + 1, (*scl).cls[i].stt[j].fio, (*scl).cls[i].stt[j].att.math, (*scl).cls[i].stt[j].att.history, (*scl).cls[i].stt[j].att.russian, (*scl).cls[i].stt[j].att.avg);
+    for (int j = 0; j < (*scl).cls[i].getCount(); j++)
+        printf("%d)%24s %24d %24d %24d %22.2f\n", j + 1, (*scl).cls[i].stt[j].getFio(), (*scl).cls[i].stt[j].att.getMath(), (*scl).cls[i].stt[j].att.getHistory(), (*scl).cls[i].stt[j].att.getRussian(), (*scl).cls[i].stt[j].att.getAvg());
 
 }
 void vivod(School* scl) {
-    if ((*scl).n_cl > 0) {
+    if ((*scl).getN_cl() > 0) {
         int v, c;
         do {
             printf("1)Вывод всех классов\n2)Вывод состава отдельного класса\n");
@@ -139,8 +217,8 @@ void vivod(School* scl) {
                 b[strlen(b) - 1] = '\0';
             if (b[strlen(b) - 1] == '\n' || strlen(b) == 1)
                 while (getchar() != '\n');
-            for (int i = 0; i < (*scl).n_cl; i++) {
-                if (strcmp((*scl).cls[i].b, b) == 0 && num == (*scl).cls[i].num) {
+            for (int i = 0; i < (*scl).getN_cl(); i++) {
+                if ((*(*scl).cls[i].getB()) == b[0] && num == (*scl).cls[i].getNum()) {
                     vivod_cls(scl, i);
                     p = 1;
                     break;
@@ -153,7 +231,7 @@ void vivod(School* scl) {
             break;
         }
         case 1: {
-            vivod_scl(scl, (*scl).n_cl);
+            vivod_scl(scl, (*scl).getN_cl());
             break;
         }
 
@@ -169,7 +247,7 @@ void vivod(School* scl) {
 
 
 int create_class(School* scl) {
-    int st, summ = 0, s, n = (*scl).n_cl, c, num, v;
+    int st, s = 0, n = (*scl).getN_cl(), c, num, v;
     char b[2], f[25];
     do {
         printf("1)Добавить класс\n2)Добавить ученика в класс\n");
@@ -181,13 +259,11 @@ int create_class(School* scl) {
 
     switch (c) {
     case 1: {
-        if ((*scl).n_cl == 5) {
+        if (n == 5) {
             printf("Места под классы больше нет");
             cl();
             return 0;
         }
-        char;
-        int;
 
         do {
             printf("Введите номер класса (1-11): ");
@@ -209,12 +285,11 @@ int create_class(School* scl) {
             v = scanf("%d", &st);
             while (getchar() != '\n');
         } while (st < 1 || v < 1 || st > 30);
-        strcpy((*scl).cls[n].b, b);
-        (*scl).cls[n].num = num;
-        (*scl).cls[n].count = st;
-        (*scl).n_cl += 1;
+        (*scl).cls[n].setB(b);
+        (*scl).cls[n].setNum(num);
+        (*scl).cls[n].setCount(st);
+        (*scl).setN_cl((*scl).getN_cl() + 1);
         for (int i = 0; i < st; i++) {
-            s = 0;
             printf("Ученик %d:\n", i + 1);
             printf("Введите ФИО: ");
             fgets(f, 26, stdin);
@@ -222,14 +297,14 @@ int create_class(School* scl) {
                 f[strlen(f) - 1] = '\0';
             if (f[strlen(f) - 1] == '\n' || strlen(f) == 25)
                 while (getchar() != '\n');
-            strcpy((*scl).cls[n].stt[i].fio, f);
+            (*scl).cls[n].stt[i].setFio(f);
 
             do {
                 printf("Введите аттестацию за математику (2-5): ");
                 v = scanf("%d", &num);
                 while (getchar() != '\n');
             } while (num > 5 || num < 2 || v < 1);
-            (*scl).cls[n].stt[i].att.math = num;
+            (*scl).cls[n].stt[i].att.setMath(num);
             s += num;
 
             do {
@@ -237,25 +312,24 @@ int create_class(School* scl) {
                 v = scanf("%d", &num);
                 while (getchar() != '\n');
             } while (num > 5 || num < 2 || v < 1);
-            (*scl).cls[n].stt[i].att.history = num;
+            (*scl).cls[n].stt[i].att.setHistory(num);
             s += num;
             do {
                 printf("Введите аттестацию за русский (2-5): ");
                 v = scanf("%d", &num);
                 while (getchar() != '\n');
             } while (num > 5 || num < 2 || v < 1);
-            (*scl).cls[n].stt[i].att.russian = num;
+            (*scl).cls[n].stt[i].att.setRussian(num);
             s += num;
-            (*scl).cls[n].stt[i].att.avg = float(s) / 3.f;
-            summ += s;
+            (*scl).cls[n].stt[i].att.setAvg();
         }
-
-        (*scl).cls[n].avg = float(summ) / (float((*scl).cls[n].count) * 3.f);
+        (*scl).cls[n].setAvg(float(s) / (float((*scl).cls[n].getCount()) * 3.f));
         cl();
         break;
     }
     case 2: {
-        if ((*scl).n_cl < 1) {
+        c = 0;
+        if (n < 1) {
             printf("База классов пуста.\n");
             cl();
             return 0;
@@ -273,8 +347,8 @@ int create_class(School* scl) {
         if (b[strlen(b) - 1] == '\n' || strlen(b) == 1)
             while (getchar() != '\n');
         for (int i = 0; i < n; i++) {
-            if (strcmp((*scl).cls[i].b, b) == 0 && num == (*scl).cls[i].num) {
-                if ((*scl).cls[i].count == 30) {
+            if (*(*scl).cls[i].getB() == b[0] && num == (*scl).cls[i].getNum()) {
+                if ((*scl).cls[i].getCount() == 30) {
                     printf("Места под учащихся больше нет");
                     cl();
                     return 0;
@@ -285,14 +359,14 @@ int create_class(School* scl) {
                     f[strlen(f) - 1] = '\0';
                 if (f[strlen(f) - 1] == '\n' || strlen(f) == 25)
                     while (getchar() != '\n');
-                strcpy((*scl).cls[i].stt[(*scl).cls[i].count].fio, f);
+                (*scl).cls[i].stt[(*scl).cls[i].getCount()].setFio(f);
 
                 do {
                     printf("Введите аттестацию за математику (2-5): ");
                     v = scanf("%d", &num);
                     while (getchar() != '\n');
                 } while (num > 5 || num < 2 || v < 1);
-                (*scl).cls[i].stt[(*scl).cls[i].count].att.math = num;
+                (*scl).cls[i].stt[(*scl).cls[i].getCount()].att.setMath(num);
 
 
                 do {
@@ -300,30 +374,36 @@ int create_class(School* scl) {
                     v = scanf("%d", &num);
                     while (getchar() != '\n');
                 } while (num > 5 || num < 2 || v < 1);
-                (*scl).cls[i].stt[(*scl).cls[i].count].att.history = num;
+                (*scl).cls[i].stt[(*scl).cls[i].getCount()].att.setHistory(num);
 
                 do {
                     printf("Введите аттестацию за русский (2-5): ");
                     v = scanf("%d", &num);
                     while (getchar() != '\n');
                 } while (num > 5 || num < 2 || v < 1);
-                (*scl).cls[i].stt[(*scl).cls[i].count].att.russian = num;
+                (*scl).cls[i].stt[(*scl).cls[i].getCount()].att.setRussian(num);
 
-                (*scl).cls[i].count++;
-                red_avg(scl, i, (*scl).cls[i].count - 1);
-                cl();
+                (*scl).cls[i].setCount((*scl).cls[i].getCount() + 1);
+                red_avg(scl, i, (*scl).cls[i].getCount() - 1);
+                
+                c = 1;
             }
         }
+        if (c == 0)
+            printf("Такого класса нет");
+        cl();
         break;
+        
     }
     default:
         break;
     }
 }
 
+
 void red_class(School* scl) {
     char b[2], f[25];
-    int v, num, n = (*scl).n_cl, p = 0, att;
+    int v, num, n = (*scl).getN_cl(), p = 0, att;
 
     do {
         printf("Введите номер класса (1-11): ");
@@ -340,7 +420,7 @@ void red_class(School* scl) {
         while (getchar() != '\n');
 
     for (int i = 0; i < n; i++) {
-        if (strcmp((*scl).cls[i].b, b) == 0 && num == (*scl).cls[i].num) {
+        if (*(*scl).cls[i].getB() == b[0] && num == (*scl).cls[i].getNum()) {
 
             do {
                 vivod_cls(scl, i);
@@ -348,7 +428,7 @@ void red_class(School* scl) {
                 v = scanf("%d", &num);
                 while (getchar() != '\n');
                 system("cls");
-            } while (num - 1 > (*scl).cls[i].count || num < 1 || v < 1);
+            } while (num - 1 > (*scl).cls[i].getCount() || num < 1 || v < 1);
 
             do {
                 vivod_cls(scl, i);
@@ -366,7 +446,7 @@ void red_class(School* scl) {
                     f[strlen(f) - 1] = '\0';
                 if (f[strlen(f) - 1] == '\n' || strlen(f) == 25)
                     while (getchar() != '\n');
-                strcpy((*scl).cls[i].stt[num - 1].fio, f);
+                (*scl).cls[i].stt[num - 1].setFio(f);
                 break;
             }
             case 2: {
@@ -375,7 +455,7 @@ void red_class(School* scl) {
                     v = scanf("%d", &att);
                     while (getchar() != '\n');
                 } while (att > 5 || att < 2 || v < 1);
-                (*scl).cls[i].stt[num - 1].att.math = att;
+                (*scl).cls[i].stt[num - 1].att.setMath(att);
                 red_avg(scl, i, num - 1);
                 break;
             }
@@ -385,7 +465,7 @@ void red_class(School* scl) {
                     v = scanf("%d", &att);
                     while (getchar() != '\n');
                 } while (att > 5 || att < 2 || v < 1);
-                (*scl).cls[i].stt[num - 1].att.history = att;
+                (*scl).cls[i].stt[num - 1].att.setHistory(att);
                 red_avg(scl, i, num - 1);
                 break;
             }
@@ -395,14 +475,13 @@ void red_class(School* scl) {
                     v = scanf("%d", &att);
                     while (getchar() != '\n');
                 } while (att > 5 || att < 2 || v < 1);
-                (*scl).cls[i].stt[num - 1].att.russian = att;
+                (*scl).cls[i].stt[num - 1].att.setRussian(att);
                 red_avg(scl, i, num - 1);
                 break;
             }
             default:
                 break;
             }
-
             p = 1;
             break;
         }
@@ -416,7 +495,7 @@ void red_class(School* scl) {
 }
 void del(School* scl) {
     char b[2], f[25];
-    int v, num, n = (*scl).n_cl, p = 0, att;
+    int v, num, n = (*scl).getN_cl(), p = 0, att;
     do {
 
         printf("1)удалить класс\n2)Удалить ученика\nВведите номер пункта, по которому будет происходить удаление: ");
@@ -426,8 +505,41 @@ void del(School* scl) {
     } while (p > 2 || p < 1 || v < 1);
 
     switch (p) {
-        p = 0;
+        
     case 1: {
+        p = 0;
+        do {
+            printf("Введите номер класса (1-11): ");
+            v = scanf("%d", &num);
+            while (getchar() != '\n');
+        } while (num > 11 || num < 1 || v < 1);
+
+        printf("Введите букву класса: ");
+        fgets(b, 2, stdin);
+        if (strlen(b) != 1)
+            b[strlen(b) - 1] = '\0';
+        if (b[strlen(b) - 1] == '\n' || strlen(b) == 1)
+            while (getchar() != '\n');
+
+        for (int i = 0; i < n; i++) { // через деструктор?
+            if (*(*scl).cls[i].getB() == b[0] && num == (*scl).cls[i].getNum()) {
+                for (int j = i; j < n; j++) {
+                    (*scl).cls[j] = (*scl).cls[j + 1];
+                }
+                (*scl).setN_cl((*scl).getN_cl()-1);
+                p = 1;
+                break;
+            }
+
+        }
+        if (p == 0) {
+            printf("Такого класса нет");
+            cl();
+        }
+        break;
+    }
+    case 2: {
+        p = 0;
         do {
             printf("Введите номер класса (1-11): ");
             v = scanf("%d", &num);
@@ -442,53 +554,23 @@ void del(School* scl) {
             while (getchar() != '\n');
 
         for (int i = 0; i < n; i++) {
-            if (strcmp((*scl).cls[i].b, b) == 0 && num == (*scl).cls[i].num) {
-                for (int j = i; j < n; j++) {
-                    (*scl).cls[j] = (*scl).cls[j + 1];
-                }
-                (*scl).n_cl -= 1;
-                p = 1;
-                break;
-            }
-
-        }
-        if (p == 0) {
-            printf("Такого класса нет");
-        }
-        break;
-    }
-    case 2: {
-        do {
-            printf("Введите номер класса (1-11): ");
-            v = scanf("%d", &num);
-            while (getchar() != '\n');
-        } while (num > 11 || num < 1 || v < 1);
-
-        printf("Введите букву класса: ");
-        fgets(b, 2, stdin);
-        if (strlen(b) != 2)
-            b[strlen(b) - 1] = '\0';
-        if (b[strlen(b) - 1] == '\n' || strlen(b) == 2)
-            while (getchar() != '\n');
-
-        for (int i = 0; i < n; i++) {
-            if (strcmp((*scl).cls[i].b, b) == 0 && num == (*scl).cls[i].num) {
+            if (*(*scl).cls[i].getB() == b[0] && num == (*scl).cls[i].getNum()) {
                 do {
                     vivod_cls(scl, i);
-                    printf("Введите номер ученика, информацию которого хотите отредактировать: ");
+                    printf("Введите номер ученика, информацию которого хотите удалить: ");
                     v = scanf("%d", &num);
                     while (getchar() != '\n');
                     system("cls");
-                } while (num - 1 > (*scl).cls[i].count || num < 1 || v < 1);
-                for (int j = num - 1; j < (*scl).cls[i].count; j++) {
+                } while (num - 1 > (*scl).cls[i].getCount() || num < 1 || v < 1);
+                for (int j = num - 1; j < (*scl).cls[i].getCount(); j++) {
                     (*scl).cls[i].stt[j] = (*scl).cls[i].stt[j + 1];
                 }
-                (*scl).cls[i].count -= 1;
-                if ((*scl).cls[i].count == 0) {
+                (*scl).cls[i].setCount((*scl).cls[i].getCount() - 1);
+                if ((*scl).cls[i].getCount() == 0) {
                     for (int j = i; j < n; j++) {
                         (*scl).cls[j] = (*scl).cls[j + 1];
                     }
-                    (*scl).n_cl -= 1;
+                    (*scl).setN_cl((*scl).getN_cl() - 1);
                 }
                 p = 1;
                 break;
@@ -497,6 +579,7 @@ void del(School* scl) {
         }
         if (p == 0) {
             printf("Такого класса нет");
+            cl();
         }
         break;
     }
